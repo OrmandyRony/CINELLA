@@ -77,9 +77,9 @@ def registrarse():
 
 def crear_usuario(nombre, apellido, usuario, contrasena, confirmar):
     """
-    Crea un archivo(en la carpeta/data) para almacenar los datos del susario.
+    Crea un archivo(en la carpeta/data) para almacenar los datos del usuario.
     El nombre del archivo coincidira con el nombre del usuario.
-    Si el archivo ya existe devueve error.
+    Si el archivo ya existe devuelve error.
     Si la contraseña no coincide con la confirmación, devuelve un error.
     :parametro name:  nombre del usuario
     :parametro apellido: apellido del usuario,que luego  utilizara para recuperar 
@@ -110,7 +110,7 @@ def crear_usuario(nombre, apellido, usuario, contrasena, confirmar):
         json.dump(datos, f)
     session['nombre'] = nombre
     session['contraseña'] = contrasena
-    session['mensages'] = []
+    session['mensajes'] = []
     session['usuario'] = usuario
     return redirect(url_for("index"))
 
@@ -119,7 +119,7 @@ def ingresar_usuario(usuario, contrasena):
     Carga los datos para el usuario dado(identificado por el nombre de usuario)
     desde el  directorio data.
     Busca un archivo cuyo nombre coincida con el nombre de usuario.
-    :parametro usuario: id usuario
+    :parametro usuario: usuario
     :parametro contrasena: contraseña a verficar para validar al usuario
     :return: contenido de la página de inicio, si el usuario existe y lacontraseña es correcta.
     """
@@ -137,6 +137,29 @@ def ingresar_usuario(usuario, contrasena):
     session['mensajes'] = data['mensajes']
     session['peliculas'] = data['peliculas']
     return redirect(url_for("inicio"))
+
+@app.route('/cerrar', methods=['GET', 'POST'])
+def cerrar_sescion():
+    """
+    Procesa la url '/cerrar' (el usuario sale del sistema)
+    :return: la pagina principal de la aplicacion
+    """
+    guardar_datos_usuario()
+    session.pop('nombre', None)
+    return redirect(url_for('index'))
+
+def guardar_datos_usuario():
+    datos = {
+        "nombre": session['nombre'],
+        "apellido": session['apellido'],
+        "contrasena": session['contrasena'],
+        "usuario": session['usuario'],
+        "mensajes": session['mensajes'],
+        "peliculas": session['peliculas']
+    }
+    file_path = os.path.join(root, "data/", session['usuario'])
+    with open(file_path, 'w') as f:
+        json.dump(datos, f)
 
 app.secret_key = 'amo_sistemas'
 
