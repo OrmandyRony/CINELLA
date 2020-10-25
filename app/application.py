@@ -112,7 +112,7 @@ def crear_usuario(nombre, apellido, usuario, contrasena, confirmar):
     session['contraseña'] = contrasena
     session['mensajes'] = []
     session['usuario'] = usuario
-    return redirect(url_for("index"))
+    return redirect(url_for("login"))
 
 def ingresar_usuario(usuario, contrasena):
     """
@@ -160,6 +160,24 @@ def guardar_datos_usuario():
     file_path = os.path.join(root, "data/", session['usuario'])
     with open(file_path, 'w') as f:
         json.dump(datos, f)
+
+@app.route('/resenas', methods=['GET'])
+def resena():
+    return render_template('resenas.html')
+
+@app.route('/funciones', methods=['GET', 'POST'])
+def funciones():
+    return render_template('funciones.html')
+
+@app.route('/usuarios', methods=['GET','POST'])
+def usuarios():
+    return render_template('usuarios.html')
+
+@app.route('/perfil', methods=['GET','POST'])
+def perfil():
+    return render_template('perfil.html')
+
+
 
 app.secret_key = 'amo_sistemas'
 
